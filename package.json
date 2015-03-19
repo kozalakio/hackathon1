@@ -1,0 +1,19 @@
+{
+  "name": "hackathon1",
+  "version": "0.0.1",
+  "description": "kozalak hackathon 1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Success!\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kozalakio/hackathon1.git"
+  },
+  "author": "Team Kozalak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kozalakio/hackathon1/issues"
+  },
+  "homepage": "https://github.com/kozalakio/hackathon1"
+}
