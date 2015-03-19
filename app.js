@@ -13,11 +13,13 @@ var homeController = require('./controllers/home');
  */
 var app = express();
 
+/**
+ * Express config
+ */
+app.set('port', process.env.PORT || 3000);
+
 app.get('/', homeController.index);
 
-var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('Example app listening at http://%s:%s', host, port);
+app.listen(app.get('port'), function () {
+  console.log('listening on port %s', app.get('port'));
 });
