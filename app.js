@@ -6,6 +6,7 @@ var path = require('path');
 var logger = require('morgan');
 var session = require('express-session');
 var lusca = require('lusca');
+var errorHandler = require('errorhandler');
 
 var configs = require('./configs/configs');
 
@@ -38,8 +39,9 @@ app.use(lusca({
   xssProtection: true
 }));
 
-// turn false for production
+// false & dont use on production
 app.locals.pretty = true;
+app.use(errorHandler());
 
 app.get('/', homeController.index);
 
