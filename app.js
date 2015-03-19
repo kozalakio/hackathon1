@@ -7,6 +7,7 @@ var logger = require('morgan');
 var session = require('express-session');
 var lusca = require('lusca');
 var errorHandler = require('errorhandler');
+var mongoose = require('mongoose');
 
 var configs = require('./configs/configs');
 
@@ -19,6 +20,14 @@ var homeController = require('./controllers/home');
  * Create express server
  */
 var app = express();
+
+/**
+ * Connect to mongodb
+ */
+mongoose.connect(configs.db);
+mongoose.connection.on('error', function() {
+    throw 'db connection failed';
+});
 
 /**
  * Express config
