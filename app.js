@@ -1,18 +1,19 @@
 /**
  *  Module dependencies
  */
-
 var express = require('express');
 
+/**
+ * Controllers
+ */
+var homeController = require('./controllers/home');
 
 /**
  * Create express server
  */
 var app = express();
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
+app.get('/', homeController.index);
 
 var server = app.listen(3000, function () {
   var host = server.address().address;
