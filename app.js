@@ -4,6 +4,10 @@
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
+var session = require('express-session');
+var lusca = require('lusca');
+
+var configs = require('./configs/configs');
 
 /**
  * Controllers
@@ -23,6 +27,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 app.use(logger('dev'));
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: configs.sessionSecret
+}));
+app.use(lusca({
+  csrf: true,
+  xframe: 'SAMEORIGIN',
+  xssProtection: true
+}));
 
 // turn false for production
 app.locals.pretty = true;

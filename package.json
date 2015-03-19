@@ -18,7 +18,9 @@
   "homepage": "https://github.com/kozalakio/hackathon1",
   "dependencies": {
     "express": "^4.12.3",
+    "express-session": "^1.10.4",
     "jade": "^1.9.2",
+    "lusca": "^1.0.2",
     "morgan": "^1.5.2"
   }
 }
