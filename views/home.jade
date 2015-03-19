@@ -1,0 +1,45 @@
+doctype html
+html
+  head
+    meta(http-equiv='Content-type', content='text/html; charset=utf-8')
+    title Basic Example
+    link(rel="stylesheet", href="css/base.css")
+  body
+    div#container
+      p.
+        To install React, follow the instructions on
+        <a href='http://www.github.com/facebook/react/'>GitHub</a>.
+      p.
+        If you can see this, React is not working right.
+        If you checked out the source from GitHub make sure to run <code>grunt</code>
+    h4 Example Details
+    p This is written in vanilla JavaScript (without JSX) and transformed in the browser.
+    p.
+      Learn more about React at
+      <a href="http://facebook.github.io/react" target="_blank">facebook.github.io/react</a>.
+    script(src='js/es5-shim.min.js')
+    script(src='js/es5-sham.min.js')
+    script(src='js/console-polyfill.js')
+    script(src='js/react.js')
+    script.
+      var ExampleApplication = React.createClass({
+        render: function() {
+          var elapsed = Math.round(this.props.elapsed  / 100);
+          var seconds = elapsed / 10 + (elapsed % 10 ? '' : '.0' );
+          var message =
+            'React has been successfully running for ' + seconds + ' seconds.';
+
+          return React.DOM.p(null, message);
+        }
+      });
+
+      // Call React.createFactory instead of directly call ExampleApplication({...}) in React.render
+      var ExampleApplicationFactory = React.createFactory(ExampleApplication);
+
+      var start = new Date().getTime();
+      setInterval(function() {
+        React.render(
+          ExampleApplicationFactory({elapsed: new Date().getTime() - start}),
+          document.getElementById('container')
+        );
+      }, 50);

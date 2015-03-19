@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/kozalakio/hackathon1",
   "dependencies": {
-    "express": "^4.12.3"
+    "express": "^4.12.3",
+    "jade": "^1.9.2"
   }
 }
