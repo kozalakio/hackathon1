@@ -8,6 +8,7 @@ var session = require('express-session');
 var lusca = require('lusca');
 var errorHandler = require('errorhandler');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 var configs = require('./configs/configs');
 
@@ -15,6 +16,8 @@ var configs = require('./configs/configs');
  * Controllers
  */
 var homeController = require('./controllers/home');
+var accountController = require('./controllers/account');
+var profileController = require('./controllers/profile');
 
 /**
  * Create express server
@@ -42,17 +45,26 @@ app.use(session({
   saveUninitialized: true,
   secret: configs.sessionSecret
 }));
-app.use(lusca({
-  csrf: true,
-  xframe: 'SAMEORIGIN',
-  xssProtection: true
-}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded( { extended: false}));
+//app.use(lusca({
+//  csrf: true,
+//  xframe: 'SAMEORIGIN',
+//  xssProtection: true
+//}));
 
 // false & dont use on production
 app.locals.pretty = true;
 app.use(errorHandler());
 
+// routing
 app.get('/', homeController.index);
+app.get("/signup", accountController.signupPage);
+app.post("/signup", accountController.userExist, accountController.signup);
+app.get("/login", accountController.loginPage);
+app.post("/login", accountController.login);
+app.get('/logout', accountController.logout);
+app.get('/profile', accountController.requiredAuthentication, profileController.index);
 
 app.listen(app.get('port'), function () {
   console.log('listening on port %s', app.get('port'));
