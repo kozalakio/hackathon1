@@ -9,13 +9,17 @@ exports.signupPage = function (req, res) {
     if (req.session.user) {
         res.redirect("/");
     } else {
-        res.render("signup");
+        res.render("signup", {
+            _csrf: res.locals._csrf
+        });
     }
 };
 
 // GET /loginPage
 exports.loginPage = function (req, res) {
-    res.render("login");
+    res.render("login", {
+        _csrf: res.locals._csrf
+    });
 };
 
 // POST /login

@@ -47,11 +47,11 @@ app.use(session({
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( { extended: false}));
-//app.use(lusca({
-//  csrf: true,
-//  xframe: 'SAMEORIGIN',
-//  xssProtection: true
-//}));
+app.use(lusca({
+  csrf: true,
+  xframe: 'SAMEORIGIN',
+  xssProtection: true
+}));
 
 // false & dont use on production
 app.locals.pretty = true;
