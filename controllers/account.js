@@ -17,7 +17,7 @@ exports.signupPage = function (req, res) {
 
 // GET /loginPage
 exports.loginPage = function (req, res) {
-    res.send('<a href="/auth/facebook">Login with Facebook</a>' + '<br>' +'<a href="/auth/twitter">Login with Twitter</a>');
+    res.send('<a href="/auth/facebook">Login with Facebook</a>' + '<br>' + '<a href="/auth/twitter">Login with Twitter</a>');
     //res.render("login", {
     //    _csrf: res.locals._csrf
     //});
@@ -68,7 +68,7 @@ exports.facebookConnect = function (accessToken, refreshToken, profile, done) {
     console.log(profile);
     User.findOne({
         'facebook.id': profile.id
-    }, function(err, user) {
+    }, function (err, user) {
         if (err) {
             return done(err);
         }
@@ -76,15 +76,15 @@ exports.facebookConnect = function (accessToken, refreshToken, profile, done) {
         if (!user) {
             user = new User({
                 provider: 'facebook',
-                facebook: { id: profile.id, token: accessToken, json: profile._json},
+                facebook: {id: profile.id, token: accessToken, json: profile._json},
                 profile: {
                     firstName: profile._json.first_name,
                     lastName: profile._json.last_name,
                     displayName: profile.displayName,
-                    gender: profile.gender?profile.gender:'unknown'
+                    gender: profile.gender ? profile.gender : 'unknown'
                 }
             });
-            user.save(function(err) {
+            user.save(function (err) {
                 if (err) console.log(err);
                 return done(err, user);
             });
