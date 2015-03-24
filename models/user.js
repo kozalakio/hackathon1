@@ -19,6 +19,7 @@ var UserSchema = new Schema({
     profile: {
         firstName: String,
         lastName: String,
+        displayName: String,
         gender: String
     }
 });
