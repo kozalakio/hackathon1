@@ -6,7 +6,7 @@ var User = require('../models/user.js');
 
 // GET /signup
 exports.signupPage = function (req, res) {
-    if (req.session.user) {
+    if (req.user) {
         res.redirect("/");
     } else {
         res.render("signup", {
@@ -31,6 +31,7 @@ exports.login = function (req, res) {
 // POST /logout
 exports.logout = function (req, res) {
     req.session.destroy(function () {
+        req.logOut();
         res.redirect('/');
     });
 };
@@ -51,7 +52,8 @@ exports.signup = function (req, res) {
                 authenticate(newUser.username, password, function (err, user) {
                     if (user) {
                         req.session.regenerate(function () {
-                            req.session.user = user;
+                            req.user = user;
+                            req.logIn(user);
                             req.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/restricted">/restricted</a>.';
                             res.redirect('/');
                         });
@@ -63,6 +65,7 @@ exports.signup = function (req, res) {
 
 // Facebook Connect
 exports.facebookConnect = function (accessToken, refreshToken, profile, done) {
+    console.log(profile);
     User.findOne({
         'facebook.id': profile.id
     }, function(err, user) {
@@ -75,8 +78,9 @@ exports.facebookConnect = function (accessToken, refreshToken, profile, done) {
                 provider: 'facebook',
                 facebook: { id: profile.id, token: accessToken, json: profile._json},
                 profile: {
-                    firstName: profile.first_name,
-                    lastName: profile.last_name,
+                    firstName: profile._json.first_name,
+                    lastName: profile._json.last_name,
+                    displayName: profile.displayName,
                     gender: profile.gender?profile.gender:'unknown'
                 }
             });
@@ -94,11 +98,11 @@ exports.facebookConnect = function (accessToken, refreshToken, profile, done) {
 // Twitter Connect
 exports.twitterConnect = function (accessToken, refreshToken, profile, done) {
     console.log(profile);
-    return;
-}
+    return done(null, user);
+};
 
 exports.requiredAuthentication = function (req, res, next) {
-    if (req.session.user) {
+    if (req.user) {
         next();
     } else {
         req.session.error = 'Access denied!';

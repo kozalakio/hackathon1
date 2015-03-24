@@ -18,7 +18,7 @@ var TwitterStrategy = require('passport-twitter').Strategy;
 /**
  * Controllers
  */
-var accountController = require('./controllers/account'); 
+var accountController = require('./controllers/account');
 var homeController = require('./controllers/home');
 var profileController = require('./controllers/profile');
 
