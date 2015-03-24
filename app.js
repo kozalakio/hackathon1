@@ -1,22 +1,22 @@
 /**
  *  Module dependencies
  */
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var session = require('express-session');
-var lusca = require('lusca');
-var errorHandler = require('errorhandler');
-var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-
 var configs = require('./configs/configs');
+var express = require('express');
+var errorHandler = require('errorhandler');
+var logger = require('morgan');
+var lusca = require('lusca');
+var mongoose = require('mongoose');
+var path = require('path');
+var passport = require('passport');
+var session = require('express-session');
 
 /**
  * Controllers
  */
+var accountController = require('./controllers/account'); 
 var homeController = require('./controllers/home');
-var accountController = require('./controllers/account');
 var profileController = require('./controllers/profile');
 
 /**
