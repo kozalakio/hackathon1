@@ -3,6 +3,7 @@
  */
 var bodyParser = require('body-parser');
 var configs = require('./configs/configs');
+var cookieParser = require('cookie-parser');
 var express = require('express');
 var errorHandler = require('errorhandler');
 var logger = require('morgan');
@@ -11,6 +12,7 @@ var mongoose = require('mongoose');
 var path = require('path');
 var passport = require('passport');
 var session = require('express-session');
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 /**
  * Controllers
@@ -45,6 +47,7 @@ app.use(session({
   saveUninitialized: true,
   secret: configs.sessionSecret
 }));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( { extended: false}));
 app.use(lusca({
@@ -52,6 +55,24 @@ app.use(lusca({
   xframe: 'SAMEORIGIN',
   xssProtection: true
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(
+    new FacebookStrategy({
+        clientID: configs.fbAppId,
+        clientSecret: configs.fbAppSecret,
+        callbackURL: "http://www.kozalak.com/auth/facebook/callback"
+    },
+    accountController.facebookConnect
+));
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+});
 
 // false & dont use on production
 app.locals.pretty = true;
@@ -62,9 +83,15 @@ app.get('/', homeController.index);
 app.get("/signup", accountController.signupPage);
 app.post("/signup", accountController.userExist, accountController.signup);
 app.get("/login", accountController.loginPage);
-app.post("/login", accountController.login);
+app.post('/login', passport.authenticate('local'), accountController.login);
 app.get('/logout', accountController.logout);
 app.get('/profile', accountController.requiredAuthentication, profileController.index);
+
+app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook',
+        { successRedirect: '/',
+        failureRedirect: '/login' }));
 
 app.listen(app.get('port'), function () {
   console.log('listening on port %s', app.get('port'));

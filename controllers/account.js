@@ -17,25 +17,15 @@ exports.signupPage = function (req, res) {
 
 // GET /loginPage
 exports.loginPage = function (req, res) {
-    res.render("login", {
-        _csrf: res.locals._csrf
-    });
+    res.send('<a href="/auth/facebook">Login with Facebook</a>');
+    //res.render("login", {
+    //    _csrf: res.locals._csrf
+    //});
 };
 
 // POST /login
 exports.login = function (req, res) {
-    authenticate(req.body.username, req.body.password, function (err, user) {
-        if (user) {
-            req.session.regenerate(function () {
-                req.session.user = user;
-                req.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/restricted">/restricted</a>.';
-                res.redirect('/');
-            });
-        } else {
-            req.session.error = 'Authentication failed, please check your ' + ' username and password.';
-            res.redirect('/login');
-        }
-    });
+    res.redirect('/users/' + req.user.username);
 };
 
 // POST /logout
@@ -71,6 +61,36 @@ exports.signup = function (req, res) {
     });
 };
 
+// Facebook Connect
+exports.facebookConnect = function(accessToken, refreshToken, profile, done) {
+    User.findOne({
+        'facebook.id': profile.id
+    }, function(err, user) {
+        if (err) {
+            return done(err);
+        }
+        //No user was found... so create a new user with values from Facebook (all the profile. stuff)
+        if (!user) {
+            user = new User({
+                provider: 'facebook',
+                facebook: { id: profile.id, token: accessToken, json: profile._json},
+                profile: {
+                    firstName: profile.first_name,
+                    lastName: profile.last_name,
+                    gender: profile.gender?profile.gender:'unknown'
+                }
+            });
+            user.save(function(err) {
+                if (err) console.log(err);
+                return done(err, user);
+            });
+        } else {
+            //found user. Return
+            return done(err, user);
+        }
+    });
+};
+
 exports.requiredAuthentication = function (req, res, next) {
     if (req.session.user) {
         next();
@@ -81,7 +101,6 @@ exports.requiredAuthentication = function (req, res, next) {
 };
 
 exports.userExist = function (req, res, next) {
-    console.log(req, req.body);
     User.count({
         username: req.body.username
     }, function (err, count) {
@@ -95,8 +114,6 @@ exports.userExist = function (req, res, next) {
 };
 
 function authenticate(name, pass, fn) {
-    if (!module.parent) console.log('authenticating %s:%s', name, pass);
-
     User.findOne({
             username: name
         },
