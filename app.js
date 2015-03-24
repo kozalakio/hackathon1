@@ -13,6 +13,7 @@ var path = require('path');
 var passport = require('passport');
 var session = require('express-session');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var TwitterStrategy = require('passport-twitter').Strategy;
 
 /**
  * Controllers
@@ -57,6 +58,7 @@ app.use(lusca({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+// Facebook
 passport.use(
     new FacebookStrategy({
         clientID: configs.fbAppId,
@@ -64,6 +66,16 @@ passport.use(
         callbackURL: "http://www.kozalak.com/auth/facebook/callback"
     },
     accountController.facebookConnect
+));
+
+// Twitter
+passport.use (
+	new TwitterStrategy({
+		consumerKey: configs.twitterConsumerKey,
+		consumerSecret: configs.twitterConsumerSecret,
+		callbackURL: "http://www.kozalak.com/auth/twitter/callback"
+	},
+	accountController.twitterConnect
 ));
 
 passport.serializeUser(function(user, done) {
@@ -92,6 +104,12 @@ app.get('/auth/facebook/callback',
     passport.authenticate('facebook',
         { successRedirect: '/',
         failureRedirect: '/login' }));
+
+app.get('/auth/twitter', passport.authenticate('twitter'));
+app.get('/auth/twitter/callback',
+	passport.authenticate('twitter', 
+		{ successRedirect: '/',
+		failureRedirect: '/login'}));
 
 app.listen(app.get('port'), function () {
   console.log('listening on port %s', app.get('port'));

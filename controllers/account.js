@@ -17,7 +17,7 @@ exports.signupPage = function (req, res) {
 
 // GET /loginPage
 exports.loginPage = function (req, res) {
-    res.send('<a href="/auth/facebook">Login with Facebook</a>');
+    res.send('<a href="/auth/facebook">Login with Facebook</a>' + '<br>' +'<a href="/auth/twitter">Login with Twitter</a>');
     //res.render("login", {
     //    _csrf: res.locals._csrf
     //});
@@ -62,7 +62,7 @@ exports.signup = function (req, res) {
 };
 
 // Facebook Connect
-exports.facebookConnect = function(accessToken, refreshToken, profile, done) {
+exports.facebookConnect = function (accessToken, refreshToken, profile, done) {
     User.findOne({
         'facebook.id': profile.id
     }, function(err, user) {
@@ -90,6 +90,12 @@ exports.facebookConnect = function(accessToken, refreshToken, profile, done) {
         }
     });
 };
+
+// Twitter Connect
+exports.twitterConnect = function (accessToken, refreshToken, profile, done) {
+    console.log(profile);
+    return;
+}
 
 exports.requiredAuthentication = function (req, res, next) {
     if (req.session.user) {
