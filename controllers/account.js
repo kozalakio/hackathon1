@@ -32,7 +32,7 @@ exports.login = function (req, res) {
     authenticate(req.body.username, req.body.password, function (err, user) {
         if (user) {
             req.session.regenerate(function () {
-                req.user = user;
+                req.session.user = user;
                 req.session.success = 'Authenticated as ' + 
                                         user.username + 
                                         ' click to <a href="/logout">logout</a>. ' + 
@@ -70,7 +70,7 @@ exports.signup = function (req, res) {
                 authenticate(newUser.username, password, function (err, user) {
                     if (user) {
                         req.session.regenerate(function () {
-                            req.user = user;
+                            req.session.user = user;
                             req.logIn(user);
                             req.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/restricted">/restricted</a>.';
                             res.redirect('/');
@@ -120,6 +120,10 @@ exports.twitterConnect = function (accessToken, refreshToken, profile, done) {
 };
 
 exports.requiredAuthentication = function (req, res, next) {
+    if (req.session && req.session.user && !req.user) {
+        req.user = req.session.user;
+    }
+
     if (req.user) {
         next();
     } else {
