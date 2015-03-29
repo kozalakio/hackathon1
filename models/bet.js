@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 var BetSchema = new Schema({
     name: String,
     description: String,
-    options: {},
+    betOptions: {},
     creator: {type: Schema.ObjectId, ref: 'user'},
     startDate: {type: Date, required: true, default: Date},
     endDate: {type: Date, required: true, default: Date}
