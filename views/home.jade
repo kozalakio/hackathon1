@@ -7,10 +7,11 @@ html
         link(rel="stylesheet", href="css/signin.css")
     body
         div.container
-            form.form-signin
+            form.form-signin(method="POST", action="/login")
                 h2.form-signin-heading Please sign in
                 label(for='username', class='sr-only') Email address
-                input#username(class='form-control', placeholder='Username', required, autofocus)
+                input#username(name='username', class='form-control', placeholder='Username', required, autofocus)
                 label(for='password', class='sr-only') Password
-                input#password(type='password', class='form-control', placeholder='Password', required)
-                button.btn.btn-lg.btn-primary.btn-block(type='submit', target='/login') Sign in
+                input#password(name='password', type='password', class='form-control', placeholder='Password', required)
+                button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+                input(type="hidden", name="_csrf", value=_csrf)

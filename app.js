@@ -95,7 +95,7 @@ app.get('/', homeController.index);
 app.get("/signup", accountController.signupPage);
 app.post("/signup", accountController.userExist, accountController.signup);
 app.get("/login", accountController.loginPage);
-app.post('/login', passport.authenticate('local'), accountController.login);
+app.post('/login', accountController.login);
 app.get('/logout', accountController.logout);
 app.get('/profile', accountController.requiredAuthentication, profileController.index);
 

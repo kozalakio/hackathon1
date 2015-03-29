@@ -17,15 +17,33 @@ exports.signupPage = function (req, res) {
 
 // GET /loginPage
 exports.loginPage = function (req, res) {
-    res.send('<a href="/auth/facebook">Login with Facebook</a>' + '<br>' + '<a href="/auth/twitter">Login with Twitter</a>');
-    //res.render("login", {
-    //    _csrf: res.locals._csrf
-    //});
+    //res.send('<a href="/auth/facebook">Login with Facebook</a>' + '<br>' + '<a href="/auth/twitter">Login with Twitter</a>');
+    if (req.user) {
+        res.redirect("/");
+    } else {
+        res.render("login", {
+            _csrf: res.locals._csrf
+        });
+    }
 };
 
 // POST /login
 exports.login = function (req, res) {
-    res.redirect('/users/' + req.user.username);
+    authenticate(req.body.username, req.body.password, function (err, user) {
+        if (user) {
+            req.session.regenerate(function () {
+                req.user = user;
+                req.session.success = 'Authenticated as ' + 
+                                        user.username + 
+                                        ' click to <a href="/logout">logout</a>. ' + 
+                                        ' You may now access <a href="/restricted">/restricted</a>.';
+                res.redirect('/profile');
+            });
+        } else {
+            req.session.error = 'Authentication failed, please check your ' + ' username and password.';
+            res.redirect('/login');
+        }
+    });
 };
 
 // POST /logout
